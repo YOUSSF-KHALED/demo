@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TS Cosmetics</title>
+<title>ES Store</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -66,7 +66,7 @@ a { color: inherit; text-decoration: none; }
 .cat-img img { width: 100%; height: 100%; object-fit: cover; }
 
 /* 5 — المنتجات */
-.products { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.products { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
 .card { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; display: flex; flex-direction: column; transition: box-shadow .2s; }
 .card:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, .07); }
 .card-img { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: #F3F3F3; }
@@ -111,7 +111,9 @@ a { color: inherit; text-decoration: none; }
   .menu-btn { display: inline-block; }
   .slide { grid-template-columns: 1fr; text-align: center; padding-bottom: 44px; }
   .slide img { max-width: 320px; grid-row: 1; }
-  .products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .products { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 44%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; scrollbar-width: none; }
+  .products::-webkit-scrollbar { display: none; }
+  .card { scroll-snap-align: start; }
   .reviews { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .quiz { flex-direction: column; text-align: center; }
@@ -119,7 +121,7 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 480px) {
   .cats { gap: 10px; }
   .cat { font-size: 13px; }
-  .products { gap: 10px; }
+  .products { gap: 10px; grid-auto-columns: 62%; }
 }
 </style>
 </head>
@@ -139,7 +141,7 @@ a { color: inherit; text-decoration: none; }
     <button class="icon-btn menu-btn" aria-label="القائمة">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
-    <a href="#" class="logo">TS <span>Cosmetics</span></a>
+    <a href="#" class="logo">ES <span>Store</span></a>
     <div class="header-icons">
       <button class="icon-btn" aria-label="بحث">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
@@ -208,6 +210,13 @@ a { color: inherit; text-decoration: none; }
         <button class="add-btn">أضيفي للسلة</button>
       </div>
       <div class="card">
+        <div class="card-img"><img src="images/coconut-milk-collagen.jpeg" alt="Coconut Milk Collagen"><span class="badge">جديد</span></div>
+        <h3>Coconut Milk Collagen</h3>
+        <div class="sub">كريم كولاجين لنعومة وتفتيح البشرة</div>
+        <div class="price">٣٥٠ ج.م</div>
+        <button class="add-btn">أضيفي للسلة</button>
+      </div>
+      <div class="card">
         <div class="card-img"><img src="images/magical-mix-comb.jpeg" alt="Magical Mix Hair Oil"></div>
         <h3>Magical Mix</h3>
         <div class="sub">زيت لتطويل وتقوية الشعر</div>
@@ -259,9 +268,9 @@ a { color: inherit; text-decoration: none; }
   <section class="section">
     <div class="section-head"><h2>آراء عملائنا</h2></div>
     <div class="reviews">
-      <div class="review"><div class="stars">★★★★★</div><p>مكان ريفيو العميلة (سكرين شوت من الواتساب أو الإنستا)</p><span>— اسم العميلة</span></div>
-      <div class="review"><div class="stars">★★★★★</div><p>مكان ريفيو العميلة (سكرين شوت من الواتساب أو الإنستا)</p><span>— اسم العميلة</span></div>
-      <div class="review"><div class="stars">★★★★★</div><p>مكان ريفيو العميلة (سكرين شوت من الواتساب أو الإنستا)</p><span>— اسم العميلة</span></div>
+      <div class="review"><div class="stars">★★★★★</div><p>كريم Valcanix فرق معايا جداً في التصبغات، بعد أسبوعين بشرتي بقت أفتح وأنضف. هطلبه تاني أكيد 💜</p><span>— منة، القاهرة</span></div>
+      <div class="review"><div class="stars">★★★★★</div><p>زيت Magical Mix أحسن حاجة جربتها لشعري، التساقط قل جداً وشعري بقى أطول وأتقل. والتوصيل كان سريع.</p><span>— سارة، الإسكندرية</span></div>
+      <div class="review"><div class="stars">★★★★★</div><p>Coconut Milk Collagen بقى أساسي في روتيني، بشرتي ناعمة وريحته تحفة. وخدمة العملاء على الواتساب محترمين جداً.</p><span>— ياسمين، المنصورة</span></div>
     </div>
   </section>
 
@@ -272,9 +281,9 @@ a { color: inherit; text-decoration: none; }
   <div class="container">
     <div class="footer-grid">
       <div>
-        <h4>TS Cosmetics</h4>
+        <h4>ES <span style="color:var(--primary)">Store</span></h4>
         <p>منتجات عناية بالبشرة والشعر بمكونات طبيعية.</p>
-        <p>www.tscosmeticseg.com</p>
+        <p>📞 ٠١٠٠٠٠٠٠٠٠٠ · 📍 القاهرة، مصر</p>
       </div>
       <div>
         <h4>الأقسام</h4>
@@ -282,14 +291,14 @@ a { color: inherit; text-decoration: none; }
       </div>
       <div>
         <h4>تواصلي معانا</h4>
-        <ul><li><a href="#">واتساب</a></li><li><a href="#">فيسبوك</a></li><li><a href="#">إنستجرام</a></li></ul>
+        <ul><li><a href="https://wa.me/201000000000" target="_blank" rel="noopener">واتساب</a></li><li><a href="https://facebook.com" target="_blank" rel="noopener">فيسبوك</a></li><li><a href="https://instagram.com" target="_blank" rel="noopener">إنستجرام</a></li><li><a href="https://tiktok.com" target="_blank" rel="noopener">تيك توك</a></li></ul>
       </div>
       <div>
         <h4>طرق الدفع</h4>
         <div class="pay"><span>كاش عند الاستلام</span><span>فيزا</span><span>فودافون كاش</span><span>إنستاباي</span></div>
       </div>
     </div>
-    <div class="copy">© ٢٠٢٦ TS Cosmetics — جميع الحقوق محفوظة</div>
+    <div class="copy">© ٢٠٢٦ ES Store — جميع الحقوق محفوظة</div>
   </div>
 </footer>
 
