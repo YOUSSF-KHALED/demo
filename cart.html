@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>السلة — ES Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="shop.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main class="container">
+  <h1 class="page-title">سلة المشتريات</h1>
+  <div id="cart-root"></div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="store.js"></script>
+<script>
+const root = document.getElementById('cart-root');
+let couponMsg = null; // { ok, text }
+
+function render() {
+  const t = cartTotals();
+
+  if (!t.lines.length) {
+    root.innerHTML = `<div class="empty"><div class="icon">🛍️</div><h2>السلة فاضية</h2><p>لسه ما ضفتيش أي منتجات.</p><a href="index.html#best-sellers" class="btn">ابدئي التسوق</a></div>`;
+    return;
+  }
+
+  const left = t.settings.freeShippingOver - t.subtotal;
+  const progress = Math.min(100, t.subtotal / t.settings.freeShippingOver * 100);
+
+  root.innerHTML = `
+  <div class="shop">
+    <div class="panel">
+      ${t.lines.map(l => `
+        <div class="line">
+          <a href="product.html?id=${encodeURIComponent(l.id)}"><img src="${l.product.images[0] || ''}" alt=""></a>
+          <div>
+            <h3><a href="product.html?id=${encodeURIComponent(l.id)}">${escapeHtml(l.product.name)}</a></h3>
+            <div class="sub">${escapeHtml(l.product.sub)}</div>
+            <div class="unit">${formatPrice(l.product.price)}</div>
+          </div>
+          <div class="line-end">
+            <div class="mini-qty">
+              <button data-act="plus" data-id="${escapeHtml(l.id)}" aria-label="زيادة">+</button>
+              <span>${toArabicDigits(l.qty)}</span>
+              <button data-act="minus" data-id="${escapeHtml(l.id)}" aria-label="نقص">−</button>
+            </div>
+            <div class="line-total">${formatPrice(l.product.price * l.qty)}</div>
+            <button class="remove" data-act="remove" data-id="${escapeHtml(l.id)}">مسح</button>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <aside class="panel summary">
+      <h2>ملخص الطلب</h2>
+      <div class="free-ship">
+        ${left > 0 ? `فاضلك <b>${formatPrice(left)}</b> وتاخدي شحن مجاني 🚚` : 'مبروك! طلبك عليه شحن مجاني 🎉'}
+        <div class="bar"><i style="width:${progress}%"></i></div>
+      </div>
+
+      ${t.coupon ? `
+        <div class="applied"><span>🏷️ ${escapeHtml(t.coupon.code)} — خصم ${couponLabel(t.coupon)}</span><button id="remove-coupon">إلغاء</button></div>
+      ` : `
+        <form class="coupon" id="coupon-form">
+          <input id="coupon-input" placeholder="كود الخصم" aria-label="كود الخصم" value="${escapeHtml(t.couponError ? t.couponCode : '')}">
+          <button>تطبيق</button>
+        </form>
+        ${t.couponError || couponMsg ? `<div class="coupon-msg ${couponMsg?.ok ? 'ok' : 'err'}">${escapeHtml(couponMsg?.text || t.couponError)}</div>` : ''}
+      `}
+
+      <div class="rows">
+        <div class="row"><span>المجموع</span><span>${formatPrice(t.subtotal)}</span></div>
+        ${t.discount ? `<div class="row discount"><span>الخصم</span><span>− ${formatPrice(t.discount)}</span></div>` : ''}
+        <div class="row"><span>الشحن</span><span>${t.shipping ? formatPrice(t.shipping) : 'مجاني'}</span></div>
+        <div class="row total"><span>الإجمالي</span><span>${formatPrice(t.total)}</span></div>
+      </div>
+      <a href="checkout.html" class="btn btn-block">إتمام الطلب</a>
+      <a href="index.html#best-sellers" class="continue">← كملي تسوق</a>
+    </aside>
+  </div>`;
+
+  root.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
+    const item = getCart().items.find(i => i.id === b.dataset.id);
+    if (!item) return;
+    const qty = b.dataset.act === 'plus' ? item.qty + 1 : b.dataset.act === 'minus' ? item.qty - 1 : 0;
+    setCartQty(b.dataset.id, qty);
+    couponMsg = null;
+    render();
+  });
+
+  const form = document.getElementById('coupon-form');
+  if (form) form.onsubmit = e => {
+    e.preventDefault();
+    const code = document.getElementById('coupon-input').value;
+    const r = checkCoupon(code, t.subtotal);
+    const cart = getCart();
+    if (r.error) {
+      cart.coupon = null;
+      couponMsg = { ok: false, text: r.error };
+    } else {
+      cart.coupon = r.coupon.code;
+      couponMsg = null;
+    }
+    saveCart(cart);
+    render();
+  };
+  const rm = document.getElementById('remove-coupon');
+  if (rm) rm.onclick = () => { const c = getCart(); c.coupon = null; saveCart(c); render(); };
+}
+render();
+</script>
+</body>
+</html>

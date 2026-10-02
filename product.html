@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>منتج — ES Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="product.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main class="container" id="product-root">
+
+  <nav class="crumbs" aria-label="مسار الصفحة">
+    <a href="index.html">الرئيسية</a><span>/</span><a href="index.html#categories" id="crumb-cat"></a><span>/</span><b id="crumb-name"></b>
+  </nav>
+
+  <section class="pdp">
+    <div class="gallery">
+      <div class="main-img"><img id="main-img" src="" alt=""><span class="badge" id="p-badge" hidden></span></div>
+      <div class="thumbs" id="thumbs"></div>
+    </div>
+
+    <div class="info">
+      <span class="tag" id="p-cat"></span>
+      <h1 id="p-name"></h1>
+      <div class="rating"><span class="stars">★★★★★</span> <b id="p-rating"></b> <a href="#reviews" id="p-reviews"></a></div>
+      <div class="p-price"><span id="p-price"></span><s id="p-old" hidden></s><span class="save" id="p-save" hidden></span></div>
+      <p class="lead" id="p-desc"></p>
+      <ul class="benefits" id="p-benefits"></ul>
+      <div class="size" id="p-size" hidden></div>
+
+      <div class="buy">
+        <div class="qty">
+          <button type="button" id="qty-plus" aria-label="زيادة">+</button>
+          <span id="qty">١</span>
+          <button type="button" id="qty-minus" aria-label="نقص">−</button>
+        </div>
+        <button class="btn add-main" id="add-main">أضيفي للسلة</button>
+      </div>
+      <a href="cart.html" class="go-cart" id="go-cart" hidden>اتضاف للسلة — اكملي الطلب ←</a>
+      <a class="wa-btn" id="wa-btn" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.6-.3Z"/></svg>
+        اطلبي على الواتساب
+      </a>
+
+      <ul class="trust">
+        <li>🚚 شحن لكل المحافظات</li>
+        <li>💵 الدفع عند الاستلام</li>
+        <li>✅ منتج أصلي ١٠٠٪</li>
+        <li>🔄 استبدال خلال ١٤ يوم</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="tabs" role="tablist">
+      <button role="tab" class="active" data-tab="desc">الوصف</button>
+      <button role="tab" data-tab="ingredients">المكونات</button>
+      <button role="tab" data-tab="usage">طريقة الاستخدام</button>
+    </div>
+    <div class="tab-panel" id="tab-desc"></div>
+    <div class="tab-panel" id="tab-ingredients" hidden></div>
+    <div class="tab-panel" id="tab-usage" hidden></div>
+  </section>
+
+  <section class="section" id="reviews">
+    <div class="section-head"><h2>آراء العميلات</h2></div>
+    <div class="reviews" id="p-review-list"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>ممكن يعجبك كمان</h2><a href="index.html#best-sellers">عرض الكل</a></div>
+    <div class="products related" id="related"></div>
+  </section>
+
+</main>
+
+<div class="sticky-buy" id="sticky-buy">
+  <div><b id="s-name"></b><span id="s-price"></span></div>
+  <button class="btn" id="s-add">أضيفي للسلة</button>
+</div>
+
+<div id="site-footer"></div>
+
+<script src="store.js"></script>
+<script>
+const id = new URLSearchParams(location.search).get('id');
+const p = getProduct(id);
+const $ = s => document.getElementById(s);
+const listHtml = arr => (arr || []).map(x => '<li>' + escapeHtml(x) + '</li>').join('');
+
+if (!p || !p.active) {
+  $('product-root').innerHTML = '<div class="not-found"><h1>المنتج ده مش موجود</h1><p>ممكن يكون اتشال أو اللينك غلط.</p><a class="btn" href="index.html">ارجعي للرئيسية</a></div>';
+  $('sticky-buy').remove();
+} else {
+  document.title = p.name + ' — ES Store';
+  $('crumb-cat').textContent = p.category;
+  $('crumb-name').textContent = p.name;
+  $('p-cat').textContent = p.category;
+  $('p-name').textContent = p.name;
+  if (p.rating) {
+    $('p-rating').textContent = toArabicDigits(p.rating);
+    $('p-reviews').textContent = '(' + toArabicDigits(p.reviews || 0) + ' تقييم)';
+  } else {
+    document.querySelector('.rating').remove();
+  }
+  $('p-price').textContent = formatPrice(p.price);
+  if (p.oldPrice > p.price) {
+    $('p-old').hidden = false; $('p-old').textContent = formatPrice(p.oldPrice);
+    $('p-save').hidden = false; $('p-save').textContent = 'وفّري ' + formatPrice(p.oldPrice - p.price);
+  }
+  const badge = p.badge || (discountPercent(p) ? '-' + toArabicDigits(discountPercent(p)) + '٪' : '');
+  if (badge) { $('p-badge').hidden = false; $('p-badge').textContent = badge; }
+  $('p-desc').textContent = p.sub + (p.description ? ' — ' + p.description.split('.')[0] + '.' : '');
+  $('p-benefits').innerHTML = listHtml(p.benefits);
+  if (p.size) { $('p-size').hidden = false; $('p-size').textContent = 'الحجم: ' + p.size; }
+
+  // الصور
+  const main = $('main-img');
+  function showImg(i) {
+    main.src = p.images[i] || ''; main.alt = p.name;
+    main.style.objectPosition = i === 0 && p.imagePosition ? p.imagePosition : '';
+    [...$('thumbs').children].forEach((t, j) => t.classList.toggle('active', j === i));
+  }
+  if (p.images.length > 1) {
+    $('thumbs').innerHTML = p.images.map((src, i) => '<button aria-label="صورة ' + (i + 1) + '"><img src="' + src + '" alt=""></button>').join('');
+    [...$('thumbs').children].forEach((t, i) => t.onclick = () => showImg(i));
+  }
+  showImg(0);
+
+  // التابات
+  $('tab-desc').innerHTML = '<p>' + escapeHtml(p.description || p.sub) + '</p>';
+  $('tab-ingredients').innerHTML = p.ingredients && p.ingredients.length ? '<ul class="benefits">' + listHtml(p.ingredients) + '</ul>' : '<p>هيتم إضافة المكونات قريباً.</p>';
+  $('tab-usage').innerHTML = '<p>' + escapeHtml(p.usage || 'هيتم إضافة طريقة الاستخدام قريباً.') + '</p>';
+  document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('active', x === b));
+    document.querySelectorAll('.tab-panel').forEach(panel => panel.hidden = panel.id !== 'tab-' + b.dataset.tab);
+  });
+
+  // الكمية والسلة
+  let qty = 1;
+  const setQty = n => { qty = Math.max(1, Math.min(10, n)); $('qty').textContent = toArabicDigits(qty); updateWa(); };
+  $('qty-plus').onclick = () => setQty(qty + 1);
+  $('qty-minus').onclick = () => setQty(qty - 1);
+  const add = btn => { addToCart(p.id, qty); flashAdded(btn, 'أضيفي للسلة'); $('go-cart').hidden = false; };
+  $('add-main').onclick = () => add($('add-main'));
+  $('s-add').onclick = () => add($('s-add'));
+  function updateWa() {
+    const msg = 'أهلاً ES Store 👋\nعايزة أطلب:\n' + p.name + ' × ' + toArabicDigits(qty) + '\nالإجمالي: ' + formatPrice(p.price * qty);
+    $('wa-btn').href = 'https://wa.me/' + getSettings().whatsapp + '?text=' + encodeURIComponent(msg);
+  }
+  updateWa();
+
+  // شريط الشراء الثابت على الموبايل
+  $('s-name').textContent = p.name;
+  $('s-price').textContent = formatPrice(p.price);
+  new IntersectionObserver(([e]) => $('sticky-buy').classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0))
+    .observe($('add-main'));
+
+  // آراء العميلات (نماذج للديمو)
+  const sample = [
+    ['نورهان، الجيزة', 'المنتج ممتاز وفرق معايا من أول أسبوع، والتغليف كان حلو جداً.'],
+    ['دينا، طنطا', 'تاني مرة أطلبه، النتيجة بجد تستاهل والسعر كويس.'],
+    ['هبة، أسيوط', 'وصلني في يومين والمنتج أصلي، خدمة العملاء ردوا على كل أسئلتي.']
+  ];
+  $('p-review-list').innerHTML = sample.map(([who, text]) =>
+    '<div class="review"><div class="stars">★★★★★</div><p>' + text + '</p><span>— ' + who + '</span></div>').join('');
+
+  // منتجات مشابهة: نفس القسم الأول وبعدين الباقي
+  const others = activeProducts().filter(x => x.id !== p.id)
+    .sort((a, b) => (b.category === p.category) - (a.category === p.category))
+    .slice(0, 4);
+  $('related').innerHTML = others.map(productCardHtml).join('');
+  bindAddButtons($('related'));
+}
+</script>
+</body>
+</html>

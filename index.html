@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ES Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<!-- ٣ — بانر سلايدر -->
+<section class="hero">
+  <div class="slides" id="slides">
+    <div class="slide">
+      <div class="slide-text">
+        <h1>قنبلة التفتيح مع Valcanix</h1>
+        <p>كريم فيتامين سي لنضارة وتوحيد لون البشرة</p>
+        <a href="#best-sellers" class="btn">تسوقي الآن</a>
+      </div>
+      <img src="images/valcanix-orange.jpeg" alt="كريم Valcanix بفيتامين سي">
+    </div>
+    <div class="slide">
+      <div class="slide-text">
+        <h1>استعيدي ثقتك بشعرك</h1>
+        <p>زيت Magical Mix لتطويل وتقوية الشعر</p>
+        <a href="#best-sellers" class="btn">تسوقي الآن</a>
+      </div>
+      <img src="images/magical-mix-pink.jpeg" alt="زيت Magical Mix للشعر">
+    </div>
+    <div class="slide">
+      <div class="slide-text">
+        <h1>ادي بشرتك العناية اللي تستحقها</h1>
+        <p>Coconut Milk Collagen لنعومة ومرونة البشرة</p>
+        <a href="#best-sellers" class="btn">تسوقي الآن</a>
+      </div>
+      <img src="images/coconut-milk-collagen.jpeg" alt="كريم Coconut Milk Collagen">
+    </div>
+  </div>
+  <div class="dots" id="dots"></div>
+</section>
+
+<main class="container">
+
+  <!-- ٤ — تسوقي حسب القسم -->
+  <section class="section" id="categories">
+    <div class="section-head"><h2>تسوقي حسب القسم</h2></div>
+    <div class="cats">
+      <a href="#" class="cat"><div class="cat-img"><img src="images/valcanix-model.jpeg" alt=""></div>بشرة</a>
+      <a href="#" class="cat"><div class="cat-img"><img src="images/magical-mix-comb.jpeg" alt=""></div>شعر</a>
+      <a href="#" class="cat"><div class="cat-img">صورة قريباً</div>مكياج</a>
+      <a href="#" class="cat"><div class="cat-img">صورة قريباً</div>جسم</a>
+    </div>
+  </section>
+
+  <!-- ٥ — الأكثر مبيعاً -->
+  <section class="section" id="best-sellers">
+    <div class="section-head"><h2>الأكثر مبيعاً</h2><a href="#">عرض الكل</a></div>
+    <div class="products" id="best-grid"></div>
+  </section>
+
+  <!-- ٦ — اكتشفي روتينك -->
+  <section class="section">
+    <div class="quiz">
+      <div>
+        <h2>اكتشفي روتينك المناسب</h2>
+        <p>٣ أسئلة بسيطة: نوع البشرة، المشكلة، السن — ونرشحلك المنتجات المناسبة</p>
+      </div>
+      <a href="#" class="btn">ابدئي</a>
+    </div>
+  </section>
+
+  <!-- ٧ — حسب المشكلة -->
+  <section class="section" id="concerns">
+    <div class="section-head"><h2>تسوقي حسب المشكلة</h2></div>
+    <div class="chips">
+      <a href="#" class="chip">تصبغات</a>
+      <a href="#" class="chip">جفاف</a>
+      <a href="#" class="chip">حب الشباب</a>
+      <a href="#" class="chip">تساقط الشعر</a>
+      <a href="#" class="chip">الشعر الهايش</a>
+      <a href="#" class="chip">حماية من الشمس</a>
+    </div>
+  </section>
+
+  <!-- ٨ — آراء العملاء -->
+  <section class="section">
+    <div class="section-head"><h2>آراء عملائنا</h2></div>
+    <div class="reviews">
+      <div class="review"><div class="stars">★★★★★</div><p>كريم Valcanix فرق معايا جداً في التصبغات، بعد أسبوعين بشرتي بقت أفتح وأنضف. هطلبه تاني أكيد 💜</p><span>— منة، القاهرة</span></div>
+      <div class="review"><div class="stars">★★★★★</div><p>زيت Magical Mix أحسن حاجة جربتها لشعري، التساقط قل جداً وشعري بقى أطول وأتقل. والتوصيل كان سريع.</p><span>— سارة، الإسكندرية</span></div>
+      <div class="review"><div class="stars">★★★★★</div><p>Coconut Milk Collagen بقى أساسي في روتيني، بشرتي ناعمة وريحته تحفة. وخدمة العملاء على الواتساب محترمين جداً.</p><span>— ياسمين، المنصورة</span></div>
+    </div>
+  </section>
+
+</main>
+
+<div id="site-footer"></div>
+
+<script src="store.js"></script>
+<script>
+// سلايدر البانر
+const slides = document.getElementById('slides');
+const dotsBox = document.getElementById('dots');
+const count = slides.children.length;
+let current = 0;
+for (let i = 0; i < count; i++) {
+  const d = document.createElement('button');
+  d.setAttribute('aria-label', 'بانر ' + (i + 1));
+  d.onclick = () => { go(i); restart(); };
+  dotsBox.appendChild(d);
+}
+function go(i) {
+  current = (i + count) % count;
+  slides.style.transform = `translateX(${current * 100}%)`; // RTL: الموجب يحرك لليمين
+  [...dotsBox.children].forEach((d, j) => d.classList.toggle('active', j === current));
+}
+let timer;
+function restart() { clearInterval(timer); timer = setInterval(() => go(current + 1), 5000); }
+go(0); restart();
+
+// المنتجات من لوحة التحكم
+const grid = document.getElementById('best-grid');
+grid.innerHTML = activeProducts().map(productCardHtml).join('');
+bindAddButtons(grid);
+</script>
+</body>
+</html>
