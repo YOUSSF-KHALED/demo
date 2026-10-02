@@ -10,32 +10,7 @@
 </head>
 <body>
 
-<!-- ١ — شريط عروض -->
-<div class="promo-bar">شحن مجاني فوق ١٠٠٠ ج.م · خصم ٢٠٪ على الباكدجات</div>
-
-<!-- ٢ — هيدر -->
-<header class="header">
-  <div class="container">
-    <nav class="nav">
-      <a href="#categories">الأقسام</a>
-      <a href="#best-sellers">الأكثر مبيعاً</a>
-      <a href="#concerns">حسب المشكلة</a>
-    </nav>
-    <button class="icon-btn menu-btn" aria-label="القائمة">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-    </button>
-    <a href="#" class="logo">ES <span>Store</span></a>
-    <div class="header-icons">
-      <button class="icon-btn" aria-label="بحث">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-      </button>
-      <button class="icon-btn" aria-label="السلة">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
-        <span class="cart-count" id="cart-count">0</span>
-      </button>
-    </div>
-  </div>
-</header>
+<div id="site-header"></div>
 
 <!-- ٣ — بانر سلايدر -->
 <section class="hero">
@@ -84,43 +59,7 @@
   <!-- ٥ — الأكثر مبيعاً -->
   <section class="section" id="best-sellers">
     <div class="section-head"><h2>الأكثر مبيعاً</h2><a href="#">عرض الكل</a></div>
-    <div class="products">
-      <div class="card">
-        <a href="product.html?id=valcanix" class="card-link"><div class="card-img"><img src="images/valcanix-model.jpeg" alt="Valcanix Vitamin C Cream"><span class="badge">-١٨٪</span></div></a>
-        <h3><a href="product.html?id=valcanix">Valcanix Vitamin C Cream</a></h3>
-        <div class="sub">كريم فيتامين سي للتفتيح</div>
-        <div class="price">٤٥٠ ج.م <s>٥٥٠</s></div>
-        <button class="add-btn">أضيفي للسلة</button>
-      </div>
-      <div class="card">
-        <a href="product.html?id=coconut" class="card-link"><div class="card-img"><img src="images/coconut-milk-collagen.jpeg" alt="Coconut Milk Collagen"><span class="badge">جديد</span></div></a>
-        <h3><a href="product.html?id=coconut">Coconut Milk Collagen</a></h3>
-        <div class="sub">كريم كولاجين لنعومة وتفتيح البشرة</div>
-        <div class="price">٣٥٠ ج.م</div>
-        <button class="add-btn">أضيفي للسلة</button>
-      </div>
-      <div class="card">
-        <a href="product.html?id=magical-mix" class="card-link"><div class="card-img"><img src="images/magical-mix-comb.jpeg" alt="Magical Mix Hair Oil"></div></a>
-        <h3><a href="product.html?id=magical-mix">Magical Mix</a></h3>
-        <div class="sub">زيت لتطويل وتقوية الشعر</div>
-        <div class="price">٣٨٠ ج.م</div>
-        <button class="add-btn">أضيفي للسلة</button>
-      </div>
-      <div class="card">
-        <a href="product.html?id=stop-hair-loss" class="card-link"><div class="card-img"><img src="images/stop-hair-loss.jpeg" alt="Stop Hair Loss" style="object-position:center 60%"></div></a>
-        <h3><a href="product.html?id=stop-hair-loss">Stop Hair Loss</a></h3>
-        <div class="sub">سبراي ضد تساقط الشعر</div>
-        <div class="price">٢٢٠ ج.م</div>
-        <button class="add-btn">أضيفي للسلة</button>
-      </div>
-      <div class="card">
-        <a href="product.html?id=shea-dax" class="card-link"><div class="card-img"><img src="images/shea-dax.jpeg" alt="Shea Dax Hair Treatment"></div></a>
-        <h3><a href="product.html?id=shea-dax">Shea Dax</a></h3>
-        <div class="sub">علاج للشعر الهايش بزبدة الشيا</div>
-        <div class="price">٥٢٠ ج.م</div>
-        <button class="add-btn">أضيفي للسلة</button>
-      </div>
-    </div>
+    <div class="products" id="best-grid"></div>
   </section>
 
   <!-- ٦ — اكتشفي روتينك -->
@@ -159,31 +98,7 @@
 
 </main>
 
-<!-- ٩ — فوتر -->
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <h4>ES <span style="color:var(--primary)">Store</span></h4>
-        <p>منتجات عناية بالبشرة والشعر بمكونات طبيعية.</p>
-        <p>📞 ٠١٠٠٠٠٠٠٠٠٠ · 📍 القاهرة، مصر</p>
-      </div>
-      <div>
-        <h4>الأقسام</h4>
-        <ul><li><a href="#">بشرة</a></li><li><a href="#">شعر</a></li><li><a href="#">مكياج</a></li><li><a href="#">جسم</a></li></ul>
-      </div>
-      <div>
-        <h4>تواصلي معانا</h4>
-        <ul><li><a href="https://wa.me/201000000000" target="_blank" rel="noopener">واتساب</a></li><li><a href="https://facebook.com" target="_blank" rel="noopener">فيسبوك</a></li><li><a href="https://instagram.com" target="_blank" rel="noopener">إنستجرام</a></li><li><a href="https://tiktok.com" target="_blank" rel="noopener">تيك توك</a></li></ul>
-      </div>
-      <div>
-        <h4>طرق الدفع</h4>
-        <div class="pay"><span>كاش عند الاستلام</span><span>فيزا</span><span>فودافون كاش</span><span>إنستاباي</span></div>
-      </div>
-    </div>
-    <div class="copy">© ٢٠٢٦ ES Store — جميع الحقوق محفوظة</div>
-  </div>
-</footer>
+<div id="site-footer"></div>
 
 <script src="store.js"></script>
 <script>
@@ -207,10 +122,10 @@ let timer;
 function restart() { clearInterval(timer); timer = setInterval(() => go(current + 1), 5000); }
 go(0); restart();
 
-// عداد السلة
-document.querySelectorAll('.add-btn').forEach(btn => {
-  btn.addEventListener('click', () => { addToCart(1); flashAdded(btn, 'أضيفي للسلة'); });
-});
+// المنتجات من لوحة التحكم
+const grid = document.getElementById('best-grid');
+grid.innerHTML = activeProducts().map(productCardHtml).join('');
+bindAddButtons(grid);
 </script>
 </body>
 </html>

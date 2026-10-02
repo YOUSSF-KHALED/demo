@@ -65,3 +65,4 @@
   .sticky-buy span { color: var(--primary-dark); font-weight: 700; }
   .footer { padding-bottom: 80px; }
 }
+.go-cart { display: block; text-align: center; color: var(--primary-dark); font-weight: 700; margin-bottom: 12px; text-decoration: underline; }

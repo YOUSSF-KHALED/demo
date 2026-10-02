@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>إتمام الطلب — ES Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="shop.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main class="container" id="checkout-root">
+  <h1 class="page-title">إتمام الطلب</h1>
+  <form class="shop" id="checkout-form" novalidate>
+    <div style="display:grid;gap:20px">
+      <section class="panel">
+        <h2>بيانات التوصيل</h2>
+        <div class="form-grid">
+          <div class="field"><label for="f-name">الاسم بالكامل</label><input id="f-name" autocomplete="name" required><span class="err"></span></div>
+          <div class="field"><label for="f-phone">رقم الموبايل</label><input id="f-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="01xxxxxxxxx" dir="ltr" style="text-align:right" required><span class="err"></span></div>
+          <div class="field"><label for="f-gov">المحافظة</label><select id="f-gov" required><option value="">اختاري المحافظة</option></select><span class="err"></span></div>
+          <div class="field"><label for="f-city">المنطقة / المدينة</label><input id="f-city" required><span class="err"></span></div>
+          <div class="field full"><label for="f-address">العنوان بالتفصيل</label><input id="f-address" placeholder="الشارع، رقم العمارة، الدور، الشقة" autocomplete="street-address" required><span class="err"></span></div>
+          <div class="field full"><label for="f-notes">ملاحظات (اختياري)</label><textarea id="f-notes" rows="2"></textarea></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>طريقة الدفع</h2>
+        <div class="pay-options">
+          <label class="pay-opt"><input type="radio" name="pay" value="whatsapp" checked><div><b>💬 الطلب على الواتساب — الدفع عند الاستلام</b><span>هنبعت تفاصيل طلبك على واتساب المتجر للتأكيد، وتدفعي كاش لما يوصلك.</span></div></label>
+          <label class="pay-opt"><input type="radio" name="pay" value="card"><div><b>💳 دفع أونلاين بالكارت</b><span>فيزا أو ماستركارد أو ميزة — دفع آمن ومباشر.</span></div></label>
+        </div>
+      </section>
+    </div>
+
+    <aside class="panel summary">
+      <h2>طلبك</h2>
+      <div class="sum-items" id="sum-items"></div>
+      <div class="rows" id="sum-rows"></div>
+      <button class="btn btn-block" id="submit-btn">تأكيد الطلب</button>
+      <a href="cart.html" class="continue">← رجوع للسلة</a>
+    </aside>
+  </form>
+</main>
+
+<!-- نافذة الدفع بالكارت -->
+<div class="modal" id="pay-modal" hidden>
+  <form class="modal-box" id="pay-form" novalidate>
+    <h2>الدفع بالكارت</h2>
+    <div class="amount" id="pay-amount"></div>
+    <div class="card-visual"><div>ES Store · Secure Pay</div><div class="num" id="cv-num">•••• •••• •••• ••••</div><div class="meta"><span id="cv-name">CARD HOLDER</span><span id="cv-exp">MM/YY</span></div></div>
+    <div class="form-grid">
+      <div class="field full"><label for="c-num">رقم الكارت</label><input id="c-num" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" dir="ltr"><span class="err"></span></div>
+      <div class="field full"><label for="c-name">الاسم على الكارت</label><input id="c-name" autocomplete="cc-name" dir="ltr"><span class="err"></span></div>
+      <div class="field"><label for="c-exp">تاريخ الانتهاء</label><input id="c-exp" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" dir="ltr"><span class="err"></span></div>
+      <div class="field"><label for="c-cvv">CVV</label><input id="c-cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="123" dir="ltr" maxlength="4"><span class="err"></span></div>
+    </div>
+    <div class="demo-note">⚠️ وضع تجريبي (ديمو): مفيش أي مبلغ هيتخصم. أي رقم كارت من ١٦ رقم هيشتغل.</div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="pay-cancel">إلغاء</button>
+      <button class="btn" id="pay-btn">ادفعي</button>
+    </div>
+  </form>
+</div>
+
+<div id="site-footer"></div>
+
+<script src="store.js"></script>
+<script>
+const $ = s => document.getElementById(s);
+const t = cartTotals();
+
+if (!t.lines.length) {
+  $('checkout-root').innerHTML = '<div class="empty"><div class="icon">🛍️</div><h2>السلة فاضية</h2><p>ضيفي منتجات الأول عشان تكملي الطلب.</p><a href="index.html#best-sellers" class="btn">ابدئي التسوق</a></div>';
+} else {
+  $('f-gov').insertAdjacentHTML('beforeend', GOVERNORATES.map(g => `<option>${g}</option>`).join(''));
+
+  // ملخص الطلب
+  $('sum-items').innerHTML = t.lines.map(l => `
+    <div class="sum-item"><img src="${l.product.images[0] || ''}" alt=""><div>${escapeHtml(l.product.name)}<div class="q">الكمية: ${toArabicDigits(l.qty)}</div></div><b>${formatPrice(l.product.price * l.qty)}</b></div>`).join('');
+  $('sum-rows').innerHTML = `
+    <div class="row"><span>المجموع</span><span>${formatPrice(t.subtotal)}</span></div>
+    ${t.discount ? `<div class="row discount"><span>خصم (${escapeHtml(t.coupon.code)})</span><span>− ${formatPrice(t.discount)}</span></div>` : ''}
+    <div class="row"><span>الشحن</span><span>${t.shipping ? formatPrice(t.shipping) : 'مجاني'}</span></div>
+    <div class="row total"><span>الإجمالي</span><span>${formatPrice(t.total)}</span></div>`;
+
+  const payMethod = () => document.querySelector('input[name=pay]:checked').value;
+  const updateBtn = () => $('submit-btn').textContent = payMethod() === 'card' ? 'ادفعي ' + formatPrice(t.total) : 'أكدي الطلب على الواتساب';
+  document.querySelectorAll('input[name=pay]').forEach(r => r.onchange = updateBtn);
+  updateBtn();
+
+  // التحقق من البيانات
+  function setErr(input, msg) {
+    const f = input.closest('.field');
+    f.classList.toggle('invalid', !!msg);
+    f.querySelector('.err').textContent = msg || '';
+    return !msg;
+  }
+  const toLatin = s => s.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+  function validateCustomer() {
+    let ok = true;
+    ok = setErr($('f-name'), $('f-name').value.trim().length < 3 ? 'اكتبي الاسم' : '') && ok;
+    const phone = toLatin($('f-phone').value).replace(/\D/g, '');
+    ok = setErr($('f-phone'), /^01[0125]\d{8}$/.test(phone) ? '' : 'رقم موبايل مصري من ١١ رقم يبدأ بـ 01') && ok;
+    ok = setErr($('f-gov'), $('f-gov').value ? '' : 'اختاري المحافظة') && ok;
+    ok = setErr($('f-city'), $('f-city').value.trim() ? '' : 'اكتبي المنطقة') && ok;
+    ok = setErr($('f-address'), $('f-address').value.trim().length < 5 ? 'اكتبي العنوان بالتفصيل' : '') && ok;
+    if (!ok) document.querySelector('.field.invalid input, .field.invalid select').focus();
+    return ok;
+  }
+
+  function buildOrder(payment) {
+    const orders = getOrders();
+    const last = orders.reduce((m, o) => Math.max(m, +o.id.split('-')[1] || 0), 1000);
+    return {
+      id: 'ES-' + (last + 1),
+      date: new Date().toISOString(),
+      customer: {
+        name: $('f-name').value.trim(),
+        phone: toLatin($('f-phone').value).replace(/\D/g, ''),
+        governorate: $('f-gov').value,
+        city: $('f-city').value.trim(),
+        address: $('f-address').value.trim(),
+        notes: $('f-notes').value.trim()
+      },
+      items: t.lines.map(l => ({ id: l.id, name: l.product.name, price: l.product.price, qty: l.qty })),
+      subtotal: t.subtotal,
+      coupon: t.coupon ? t.coupon.code : null,
+      discount: t.discount,
+      shipping: t.shipping,
+      total: t.total,
+      payment,
+      paid: payment === 'card',
+      status: 'new'
+    };
+  }
+
+  function placeOrder(order) {
+    saveOrders([order, ...getOrders()]);
+    if (order.coupon) saveCoupons(getCoupons().map(c => c.code === order.coupon ? { ...c, uses: (c.uses || 0) + 1 } : c));
+    saveCart({ items: [], coupon: null });
+  }
+
+  function whatsappText(o) {
+    return [
+      'أهلاً ES Store 👋 عايزة أأكد طلب جديد',
+      'رقم الطلب: ' + o.id,
+      '',
+      ...o.items.map(i => `• ${i.name} × ${i.qty} = ${formatPrice(i.price * i.qty)}`),
+      '',
+      'المجموع: ' + formatPrice(o.subtotal),
+      ...(o.discount ? [`خصم (${o.coupon}): − ${formatPrice(o.discount)}`] : []),
+      'الشحن: ' + (o.shipping ? formatPrice(o.shipping) : 'مجاني'),
+      'الإجمالي: ' + formatPrice(o.total),
+      'الدفع: ' + (o.paid ? 'مدفوع أونلاين ✅' : 'كاش عند الاستلام'),
+      '',
+      'الاسم: ' + o.customer.name,
+      'الموبايل: ' + o.customer.phone,
+      'العنوان: ' + [o.customer.governorate, o.customer.city, o.customer.address].join('، '),
+      ...(o.customer.notes ? ['ملاحظات: ' + o.customer.notes] : [])
+    ].join('\n');
+  }
+  const waLink = o => 'https://wa.me/' + getSettings().whatsapp + '?text=' + encodeURIComponent(whatsappText(o));
+
+  function showSuccess(o) {
+    renderCartCount();
+    window.scrollTo(0, 0);
+    $('checkout-root').innerHTML = `
+      <div class="success">
+        <div class="check">✓</div>
+        <h1>${o.paid ? 'تم الدفع واستلمنا طلبك!' : 'طلبك اتسجل!'}</h1>
+        <div class="order-no">${o.id}</div>
+        <p>${o.paid
+          ? 'هنتواصل معاكي على ' + escapeHtml(o.customer.phone) + ' لتأكيد ميعاد التوصيل.'
+          : 'لو صفحة الواتساب ما اتفتحتش، دوسي على الزرار تحت وابعتي الرسالة عشان نأكد طلبك.'}</p>
+        <div class="panel">
+          <div class="rows">
+            ${o.items.map(i => `<div class="row"><span>${escapeHtml(i.name)} × ${toArabicDigits(i.qty)}</span><span>${formatPrice(i.price * i.qty)}</span></div>`).join('')}
+            ${o.discount ? `<div class="row discount"><span>الخصم</span><span>− ${formatPrice(o.discount)}</span></div>` : ''}
+            <div class="row"><span>الشحن</span><span>${o.shipping ? formatPrice(o.shipping) : 'مجاني'}</span></div>
+            <div class="row total"><span>الإجمالي ${o.paid ? '(مدفوع)' : '(عند الاستلام)'}</span><span>${formatPrice(o.total)}</span></div>
+          </div>
+        </div>
+        ${o.paid ? '' : `<a class="btn" style="background:#25D366" href="${waLink(o)}" target="_blank" rel="noopener">ابعتي الطلب على الواتساب</a> `}
+        <a class="btn btn-ghost" href="index.html">رجوع للرئيسية</a>
+      </div>`;
+  }
+
+  $('checkout-form').onsubmit = e => {
+    e.preventDefault();
+    if (!validateCustomer()) return;
+    if (payMethod() === 'whatsapp') {
+      const order = buildOrder('whatsapp');
+      placeOrder(order);
+      window.open(waLink(order), '_blank', 'noopener');
+      showSuccess(order);
+    } else {
+      $('pay-amount').textContent = formatPrice(t.total);
+      $('c-name').value ||= $('f-name').value.trim();
+      $('cv-name').textContent = $('c-name').value.toUpperCase() || 'CARD HOLDER';
+      $('pay-modal').hidden = false;
+      $('c-num').focus();
+    }
+  };
+
+  // نافذة الدفع (تجريبية)
+  $('c-num').oninput = e => {
+    const d = toLatin(e.target.value).replace(/\D/g, '').slice(0, 16);
+    e.target.value = d.replace(/(.{4})/g, '$1 ').trim();
+    $('cv-num').textContent = (d + '•'.repeat(16 - d.length)).replace(/(.{4})/g, '$1 ').trim();
+  };
+  $('c-exp').oninput = e => {
+    const d = toLatin(e.target.value).replace(/\D/g, '').slice(0, 4);
+    e.target.value = d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d;
+    $('cv-exp').textContent = e.target.value || 'MM/YY';
+  };
+  $('c-name').oninput = e => $('cv-name').textContent = e.target.value.toUpperCase() || 'CARD HOLDER';
+  $('c-cvv').oninput = e => e.target.value = toLatin(e.target.value).replace(/\D/g, '').slice(0, 4);
+  $('pay-cancel').onclick = () => $('pay-modal').hidden = true;
+
+  $('pay-form').onsubmit = e => {
+    e.preventDefault();
+    let ok = true;
+    ok = setErr($('c-num'), $('c-num').value.replace(/\D/g, '').length === 16 ? '' : 'رقم الكارت ١٦ رقم') && ok;
+    ok = setErr($('c-name'), $('c-name').value.trim() ? '' : 'اكتبي الاسم') && ok;
+    const [mm, yy] = $('c-exp').value.split('/').map(Number);
+    const now = new Date(), expOk = mm >= 1 && mm <= 12 && yy && (2000 + yy > now.getFullYear() || (2000 + yy === now.getFullYear() && mm >= now.getMonth() + 1));
+    ok = setErr($('c-exp'), expOk ? '' : 'تاريخ غير صحيح') && ok;
+    ok = setErr($('c-cvv'), $('c-cvv').value.length >= 3 ? '' : 'CVV غلط') && ok;
+    if (!ok) return;
+    const btn = $('pay-btn');
+    btn.disabled = $('pay-cancel').disabled = true;
+    btn.innerHTML = 'جاري الدفع <span class="spinner"></span>';
+    setTimeout(() => {
+      const order = buildOrder('card');
+      order.cardLast4 = $('c-num').value.replace(/\D/g, '').slice(-4);
+      placeOrder(order);
+      $('pay-modal').hidden = true;
+      showSuccess(order);
+    }, 1800);
+  };
+}
+</script>
+</body>
+</html>
